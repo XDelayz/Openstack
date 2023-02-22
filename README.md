@@ -1,5 +1,3 @@
-# Openstack
-Openstack_Scripts
 This script, Deploys_Instance.sh, gives you the ability to quickly create an instance and throw the port to connect to the instance.
 The script was created as an interactive menu, which is very convenient when you need to create an instance with specific parameters.
 ==================
