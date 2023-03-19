@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# Скрипт делает проброс порта, предварительно запрашивает ip-сервера, интернал-порт и экстернал-порт.
 echo "IP-server"; read -r ip ; \
 echo "internal_port"; read -r in ; \
 echo "external_port"; read -r ex ; \
