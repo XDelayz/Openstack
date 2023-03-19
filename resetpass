@@ -1,0 +1,5 @@
+#!/bin/bash
+Avadakedavra=$( openssl rand 9 -base64) &&
+echo "ID-Server"; read -r i ;
+openstack server set --password "$Avadakedavra" "$i"
+echo New_Password:"$Avadakedavra"
