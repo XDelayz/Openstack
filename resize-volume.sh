@@ -1,34 +1,51 @@
 #!/bin/bash
-openstack server list &&
-echo "server_ID"; read -r s ;
-openstack server stop $s &&
-while true
-do
+
 openstack server list
-echo "Server OFF y/n"
-read CONFIRM
-case $CONFIRM in
-y|Y) openstack volume list &&
-echo "volume_ID" ; read -r d ;
-echo "new_size_volume"; read -r z ;
-openstack --os-volume-api-version 3.42 volume set $d --size $z &&
-openstack volume list ;
-break
-esac
-done
 
-<<COMMENT1
-Cкрипт выполняет следующие действия:
-1. Командой openstack server list - выводится список серверов.
-2. Введите "server_ID"
-3. После ввода server_ID с помощью команды openstack server stop $s останавливается сервер.
-4. Далее выводится список серверов и если сервер в статусе "SHUTOFF" выбираем значение "y" если нет, нажимаем "n" и цикл повториться.
-5. Командой openstack volume list выводится список всех томов.
-6. Заполняем "volume_ID" номером тома который планируем расширить.
-7. Выводится строка "new_size_volume" в которой мы указываем новый размер для тома.
-8. Командой openstack --os-volume-api-version 3.42 volume set $d --size $z изменяется размер выбранного тома.
+echo "Нужно ли выключать сервер y/n"
+read -r answer
 
-Таким образом, скрипт выполняет следующую последовательность действий: останавливает определенный виртуальный сервер, 
-запрашивает у пользователя информацию о том, был ли сервер выключен, и если да, то изменяет размер выбранного тома.
-COMMENT1
+# Если ответ "y" или "Y", остановить сервер
+if [[ "$answer" =~ ^[yY]$ ]]; then
+  echo "Введите ID сервера:"
+  read -r server_id
+  openstack server stop "$server_id"
+  openstack volume list
+  echo "Введите ID тома, который нужно раширить:"
+  read -r volume_id
+  echo "Введите новый размер тома:"
+  read -r new_size
 
+  # Изменить размер тома
+  openstack --os-volume-api-version 3.42 volume set "$volume_id" --size "$new_size"
+
+  # Показать список томов после изменения
+  openstack volume list
+
+# Если ответ "n" или "N", изменить размер тома
+elif [[ "$answer" =~ ^[nN]$ ]]; then
+  # Показать список томов
+  openstack volume list
+  echo "Введите ID тома, который нужно расширить:"
+  read -r volume_id
+  echo "Введите новый размер тома:"
+  read -r new_size
+  openstack --os-volume-api-version 3.42 volume set "$volume_id" --size "$new_size"
+
+  # Показать список томов после изменения
+  openstack volume list
+fi
+
+# Запросить пользователя о расширении еще одного тома
+  echo "Хотите изменить размер еще одного тома? (y/n)"
+  read -r expand_another
+  if [[ "$expand_another" =~ ^[yY]$ ]]; then
+    # Если пользователь хочет расширить еще один том, показать список томов
+    openstack volume list
+    echo "Введите ID тома, который нужно раширить:"
+    read -r volume_id
+    echo "Введите новый размер тома:"
+    read -r new_size
+    openstack --os-volume-api-version 3.42 volume set "$volume_id" --size "$new_size"
+    openstack volume list
+  fi
