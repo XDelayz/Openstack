@@ -29,7 +29,7 @@ flavor+=("$line")
 done <<< "$fla"
 
 PS3="Flavor:"
-select z in "${flavor[@]}"; do
+select f in "${flavor[@]}"; do
 break
 done
 
@@ -41,7 +41,7 @@ DSUB=$(openstack subnet list | grep "#" | awk -F '|' '{print $2}' | awk '{print 
 DPORT=$(openstack port create --network "$DNIC" --fixed-ip subnet="$DSUB",ip-address="192.168.2.$NUM" PORT -f value -c id) &&
 
 # создается сервер
-openstack server create "$b" --flavor "$flavor" --volume "$DVOL" --availability-zone "$zone" --port "$DPORT"
+openstack server create "$b" --flavor "$f" --volume "$DVOL" --availability-zone "$zone" --port "$DPORT"
 
 # запрос на порт-форвардинг
 echo "internal_port"; read -r in ; \
