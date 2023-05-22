@@ -3,7 +3,12 @@
 pool=(25 80 110 143 443 465 587 993 995 522 5223 9071 7071)
 
 for pool in "${pool[@]}"; do
-openstack floating ip port forwarding create --internal-ip-address [ip-server] --port [id-port] --internal-protocol-port ${pool} --external-protocol-port ${pool} --protocol tcp [floating_ip] 
+openstack floating ip port forwarding create \
+--internal-ip-address [ip-server] \
+--port [id-port] \
+--internal-protocol-port ${pool} \
+--external-protocol-port ${pool} \
+--protocol tcp [floating_ip] 
 done
 
 <<COMMENT1
