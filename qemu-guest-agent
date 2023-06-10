@@ -1,0 +1,31 @@
+#!/bin/sh
+
+DAEMON=/usr/sbin/qemu-ga
+PIDFILE=/var/run/qemu-ga.pid
+
+test -x $DAEMON || exit 0
+
+case "$1" in
+    start)
+        echo -n "Starting QEMU Guest Agent: qemu-ga"
+        start-stop-daemon --start --background --pidfile $PIDFILE --make-pidfile --startas $DAEMON
+        echo "."
+        ;;
+    stop)
+        echo -n "Stopping QEMU Guest Agent: qemu-ga"
+        start-stop-daemon --stop --pidfile $PIDFILE --retry 10
+        echo "."
+        ;;
+    restart)
+        echo -n "Restarting QEMU Guest Agent: qemu-ga"
+        start-stop-daemon --stop --pidfile $PIDFILE --retry 10
+        start-stop-daemon --start --background --pidfile $PIDFILE --make-pidfile --startas $DAEMON
+        echo "."
+        ;;
+    *)
+        echo "Usage: /etc/init.d/qemu-guest-agent {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0
